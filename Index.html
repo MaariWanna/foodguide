@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Restorante</title>
+<style>
+:root{--bg:#f3efe6;--ink:#1d2b24;--muted:#5d6b63;--mekke:#1f2a26;--mekke-ink:#e9d9a6;--medine:#1f6b4f;--medine-ink:#f4f1e6;--card:#fffdf8;--line:#d9d2c0;--accent:#1f6b4f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--ink:#eee9da;--muted:#a3ada6;--card:#1b2420;--line:#2e3a34;--accent:#6fcf9f}}
+:root[data-theme="dark"]{--bg:#121815;--ink:#eee9da;--muted:#a3ada6;--card:#1b2420;--line:#2e3a34;--accent:#6fcf9f}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:1.9rem;margin:8px 0 20px;font-weight:600}
+.home{display:grid;gap:16px}
+.city{border:0;border-radius:24px;min-height:38vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font-family:Georgia,serif;font-size:2.2rem;letter-spacing:.02em}
+.city svg{width:88px;height:88px}
+.city small{font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem;opacity:.8}
+.city:focus-visible,.btn:focus-visible,.back:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.city:active{transform:scale(.98)}
+.restorante{background:#8a4b1f;color:#fbe8d2}
+.caffe{background:#3b2a20;color:#f1dcc4}
+.mekke{background:var(--mekke);color:var(--mekke-ink)}
+.medine{background:var(--medine);color:var(--medine-ink)}
+.back{background:none;border:0;color:var(--accent);font-size:1rem;cursor:pointer;padding:8px 0;margin-bottom:4px}
+.list{display:grid;gap:12px}
+.r{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.r h2{font-size:1.1rem;margin:0 0 12px;font-weight:600}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:block;text-align:center;text-decoration:none;padding:14px 8px;border-radius:12px;font-weight:600;font-size:1rem}
+.menu{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .menu{color:#0d1a13}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .menu{color:#0d1a13}}
+.loc{border:2px solid var(--accent);color:var(--accent)}
+.btn.off{opacity:.4;pointer-events:none}
+.empty{color:var(--muted);padding:20px 0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+/* ====== SHTO KËTU ======
+   DATA[kategoria][qyteti] = lista e vendeve.
+   Çdo vend: emri, menu (URL i menusë), loc (URL i lokacionit).
+   Lëre '' nëse s'ka link ende — butoni del i zbehtë. */
+const DATA = {
+  restorante: {
+    mekke: [
+      { emri: "Mama Ghazal (Clock Tower) P13 - View", menu: "https://www.mama-ghazzel.com/menu-1", loc: "https://maps.app.goo.gl/BQoMKDvo14fc6b7JA" },
+      { emri: "Yemeni Madghout - (Al Safwa Towers) 2nd floor", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQCMb3Xw09zNQotkMVJ_v-V6Acle1CSnxCRRsFnBqCPipNI?e=JQCZZc", loc: "https://maps.app.goo.gl/pxig7Kqi4zWqJUjQ7" },
+      { emri: "Al Baraka (Uygur) - (Clock Tower) 4th floor", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQAeYACZm2ckQbDyC7hbFCK_AQQOXTE8-NTeNGAUS0K08Ws?e=Lkhe3I", loc: "https://maps.app.goo.gl/YXV8PMyteZV1vtsx5" },
+      { emri: "Hashi Basha (Camel) - (Clock Tower) 3th floor", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQA4ZcOqPxVCSZhx3zBJR6OFAfWBgNmRO0zSTUIvsnaPqmE?e=TuZA27", loc: "https://maps.app.goo.gl/UAVmScXgsRDTZFrQ7" }
+    ],
+    medine: [
+      { emri: "Mahmood Kebab (Uzbak) - Masjid Nabawi", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQBAvHviwoSISpMK7xgufRULAcRyDXdjvY6vp4f12ih5O10?e=DsYBxs", loc: "https://maps.app.goo.gl/MY68bXwDtdNWgFRx6" },
+      { emri: "Shoaib Restaurant - Masjid Qiblatayn", menu: "https://shoaib-rest.menuspages.com/", loc: "https://maps.app.goo.gl/aijbqSb3c1Tqkaka7" },
+      { emri: "SARAYA WARD - Masjid Quba", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQBA40hDESkJTLDQq8Prl0NAAVyCl5Zpl8VX_ALpIouIRo8?e=UCrU2S", loc: "https://maps.app.goo.gl/1LVQQw1UaHoKVcs78" },
+      { emri: "Swiss Butter - Al Oroba Mall - UHUD", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQDdNABZ8TUcT7AX_tJixX2iAYicGPm_fdXtPIbjmIgXtvg?e=VZBd5b", loc: "https://maps.app.goo.gl/Y7gQZtzq9V8ua4C9A" },
+      { emri: "LULU Hypermarket - Mesjid Nabawi", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQDcCPytf89YR7R13PhzlilCAdBwhJBQSzYXzZ5iZGvav-0?e=Wog728", loc: "https://maps.app.goo.gl/NQEbriisEh1MixMn7" },
+      { emri: "ANANAS Ice Cream - UHUD", menu: "https://1drv.ms/b/c/aac740bebabc96b8/IQA3417DpRRcTaNbvDgGDJjrAe5E525l_VfyXgkhInSjw1g?e=Y7Lca8", loc: "https://maps.app.goo.gl/izcy5gkYWAx8oZYy9" },
+      { emri: "Medine Fries", menu: "https://maps.app.goo.gl/Tccx12vssgVy8dM87", loc: "https://maps.app.goo.gl/jPY3bZ5gQbu9LkD26" }
+    ]
+  },
+  caffe: {
+    mekke: [
+      { emri: "Moment Caffe - (Clock Tower)", menu: "https://www.momo-cafe.com/menu-2", loc: "https://maps.app.goo.gl/AipJ2Av8Fge35FAg8" },
+      { emri: "Half Million Caffe", menu: "https://maps.app.goo.gl/DkhHtXyKXQjUN6y27", loc: "https://maps.app.goo.gl/SwCcDFaYYoKGTawV7" }
+    ],
+    medine: []
+  }
+};
+const CAT = { restorante: "Restorante", caffe: "Caffe" };
+const TITLES = { mekke: "Mekke", medine: "Medine" };
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const count = n => n + (n === 1 ? ' vend' : ' vende');
+
+const kaaba = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><rect x="14" y="16" width="36" height="34" rx="2" fill="currentColor" fill-opacity=".15"/><path d="M14 26h36M22 26v10h8V26"/></svg>';
+const mosque = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M14 52V34a18 18 0 0 1 36 0v18M8 52h48M32 8v6M6 52V26M58 52V26"/><path d="M28 52v-8a4 4 0 0 1 8 0v8"/></svg>';
+const fork = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 8v16a6 6 0 0 0 12 0V8M26 8v48M46 8c-6 4-8 12-8 22h8v26"/></svg>';
+const cup = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 24h34v14a14 14 0 0 1-14 14h-6a14 14 0 0 1-14-14V24zM46 28h4a6 6 0 0 1 0 12h-4M24 8c-3 4 3 6 0 10M34 8c-3 4 3 6 0 10"/></svg>';
+const ICON = { restorante: fork, caffe: cup, mekke: kaaba, medine: mosque };
+
+function home(){
+  app.innerHTML = `<h1>Mirë se vini</h1><div class="home">
+    ${['restorante','caffe'].map(k => `<button class="city ${k}" data-k="${k}">${ICON[k]}${CAT[k]}</button>`).join('')}</div>`;
+  app.querySelectorAll('.city').forEach(b => b.onclick = () => cities(b.dataset.k));
+  window.scrollTo(0,0);
+}
+function cities(k){
+  app.innerHTML = `<button class="back">← Kthehu</button><h1>${CAT[k]}</h1><div class="home">
+    ${['mekke','medine'].map(c => `<button class="city ${c}" data-c="${c}">${ICON[c]}${TITLES[c]}<small>${count(DATA[k][c].length)}</small></button>`).join('')}</div>`;
+  app.querySelector('.back').onclick = home;
+  app.querySelectorAll('.city').forEach(b => b.onclick = () => list(k, b.dataset.c));
+  window.scrollTo(0,0);
+}
+function link(url, cls, txt){
+  return url ? `<a class="btn ${cls}" href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`
+             : `<span class="btn ${cls} off">${txt}</span>`;
+}
+function list(k, c){
+  const items = DATA[k][c];
+  app.innerHTML = `<button class="back">← Kthehu</button><h1>${CAT[k]} · ${TITLES[c]}</h1>` +
+    (items.length ? `<div class="list">${items.map(r => `<div class="r"><h2>${esc(r.emri)}</h2><div class="row">${link(r.menu,'menu','Menu')}${link(r.loc,'loc','Lokacioni')}</div></div>`).join('')}</div>` : `<p class="empty">Nuk ka vende të shtuara ende.</p>`);
+  app.querySelector('.back').onclick = () => cities(k);
+  window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
