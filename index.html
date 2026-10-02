@@ -15,13 +15,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",syste
 main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
 h1{font-family:Georgia,"Times New Roman",serif;font-size:1.9rem;margin:8px 0 20px;font-weight:600}
 .home{display:grid;gap:16px}
-.city{border:0;border-radius:24px;min-height:38vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font-family:Georgia,serif;font-size:2.2rem;letter-spacing:.02em}
+.city{border:0;border-radius:24px;min-height:30vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font-family:Georgia,serif;font-size:2.2rem;letter-spacing:.02em}
 .city svg{width:88px;height:88px}
 .city small{font-family:"Segoe UI",system-ui,sans-serif;font-size:.95rem;opacity:.8}
 .city:focus-visible,.btn:focus-visible,.back:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .city:active{transform:scale(.98)}
 .restorante{background:#8a4b1f;color:#fbe8d2}
 .caffe{background:#3b2a20;color:#f1dcc4}
+.shopping{background:#2f4a6b;color:#e3ecf7}
 .mekke{background:var(--mekke);color:var(--mekke-ink)}
 .medine{background:var(--medine);color:var(--medine-ink)}
 .back{background:none;border:0;color:var(--accent);font-size:1rem;cursor:pointer;padding:8px 0;margin-bottom:4px}
@@ -69,9 +70,15 @@ const DATA = {
       { emri: "Half Million Caffe", menu: "https://maps.app.goo.gl/DkhHtXyKXQjUN6y27", loc: "https://maps.app.goo.gl/SwCcDFaYYoKGTawV7" }
     ],
     medine: []
+  },
+  shopping: {
+    mekke: [
+      { emri: "voco Makkah by IHG (taxi 10 riyal) form Nawazi Hotel", menu: "", loc: "https://maps.app.goo.gl/9uiRAwPRCU7cScTz6" }
+    ],
+    medine: []
   }
 };
-const CAT = { restorante: "Restorante", caffe: "Caffe" };
+const CAT = { restorante: "Restorante", caffe: "Caffe", shopping: "Shopping" };
 const TITLES = { mekke: "Mekke", medine: "Medine" };
 const app = document.getElementById('app');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -81,11 +88,12 @@ const kaaba = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke
 const mosque = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M14 52V34a18 18 0 0 1 36 0v18M8 52h48M32 8v6M6 52V26M58 52V26"/><path d="M28 52v-8a4 4 0 0 1 8 0v8"/></svg>';
 const fork = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 8v16a6 6 0 0 0 12 0V8M26 8v48M46 8c-6 4-8 12-8 22h8v26"/></svg>';
 const cup = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 24h34v14a14 14 0 0 1-14 14h-6a14 14 0 0 1-14-14V24zM46 28h4a6 6 0 0 1 0 12h-4M24 8c-3 4 3 6 0 10M34 8c-3 4 3 6 0 10"/></svg>';
-const ICON = { restorante: fork, caffe: cup, mekke: kaaba, medine: mosque };
+const bag = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h40l-3 34H15L12 20zM22 28V16a10 10 0 0 1 20 0v12"/></svg>';
+const ICON = { restorante: fork, caffe: cup, shopping: bag, mekke: kaaba, medine: mosque };
 
 function home(){
   app.innerHTML = `<h1>Mirë se vini</h1><div class="home">
-    ${['restorante','caffe'].map(k => `<button class="city ${k}" data-k="${k}">${ICON[k]}${CAT[k]}</button>`).join('')}</div>`;
+    ${['restorante','caffe','shopping'].map(k => `<button class="city ${k}" data-k="${k}">${ICON[k]}${CAT[k]}</button>`).join('')}</div>`;
   app.querySelectorAll('.city').forEach(b => b.onclick = () => cities(b.dataset.k));
   window.scrollTo(0,0);
 }
